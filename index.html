@@ -1,598 +1,395 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-   <meta charset="UTF-8" />
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Royale Fortune</title>
 
-<script>
-const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-async function loadProfile() {
-    console.log("LOAD PROFILE START");
-
-    try {
-        const response = await fetch(`${API_BASE}/profile`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                user_id: 1,
-                username: "test"
-            })
-        });
-
-        const data = await response.json();
-        console.log("PROFILE DATA:", data);
-
-        document.getElementById("balance").textContent = data.balance;
-    } catch (e) {
-        console.error("ERROR:", e);
-    }
-}
-
-window.onload = loadProfile;
-</script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Royale Fortune</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";
-</script>
-  <style>
-    :root {
-      --bg: #090909;
-      --bg2: #131313;
-      --card: rgba(255,255,255,0.04);
-      --line: rgba(212,175,55,0.18);
-      --gold: #d4af37;
-      --gold2: #f1d47a;
-      --text: #f5f0e6;
-      --muted: #9e988e;
-      --green: #55c271;
-      --red: #dc6666;
-      --shadow: 0 18px 40px rgba(0,0,0,0.45);
-      --radius: 22px;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top, rgba(212,175,55,0.14), transparent 28%),
-        linear-gradient(180deg, #070707 0%, #111 100%);
-      min-height: 100vh;
-    }
-
-    .app {
-      max-width: 460px;
-      margin: 0 auto;
-      min-height: 100vh;
-      padding: 16px 14px 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .brand-title {
-      font-size: 30px;
-      font-weight: 900;
-      color: var(--gold2);
-      letter-spacing: 0.2px;
-      margin-bottom: 4px;
-    }
-
-    .brand-sub {
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-    }
-
-    .vip-chip {
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(212,175,55,0.3);
-      background: rgba(212,175,55,0.08);
-      color: var(--gold2);
-      font-size: 12px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .hero {
-      border-radius: 26px;
-      padding: 18px;
-      background:
-        linear-gradient(145deg, rgba(212,175,55,0.1), rgba(255,255,255,0.02));
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-label {
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 8px;
-    }
-
-    .hero-balance {
-      font-size: 36px;
-      font-weight: 900;
-      color: var(--gold2);
-      margin-bottom: 14px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .stat {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 18px;
-      padding: 12px;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .stat-value {
-      font-size: 17px;
-      font-weight: 900;
-    }
-
-    .tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .tab {
-      background: var(--card);
-      border: 1px solid rgba(212,175,55,0.1);
-      color: var(--text);
-      border-radius: 18px;
-      padding: 14px 10px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-    }
-
-    .tab.active {
-      background: linear-gradient(180deg, rgba(212,175,55,0.18), rgba(255,255,255,0.03));
-      border-color: rgba(212,175,55,0.42);
-      color: var(--gold2);
-    }
-
-    .screen {
-      display: none;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 24px;
-      padding: 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .screen.active {
-      display: block;
-    }
-
-    .title {
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--gold2);
-      margin: 0 0 6px;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-      margin: 0 0 16px;
-    }
-
-    .slot-wrap {
-      background: #090909;
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 18px 12px;
-      margin-bottom: 16px;
-    }
-
-    .reels {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .reel {
-      width: 78px;
-      height: 78px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 18px;
-      background: linear-gradient(180deg, #171717, #0c0c0c);
-      border: 1px solid rgba(212,175,55,0.15);
-      font-size: 42px;
-    }
-
-    .slot-result {
-      min-height: 42px;
-      text-align: center;
-      font-size: 15px;
-      line-height: 1.45;
-    }
-
-    .row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      border: none;
-      border-radius: 16px;
-      padding: 14px 16px;
-      font-size: 15px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .gold-btn {
-      background: linear-gradient(180deg, #f2d983, #d0a31e);
-      color: #191308;
-      box-shadow: 0 10px 24px rgba(212,175,55,0.24);
-    }
-
-    .dark-btn {
-      background: #232323;
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .item {
-      background: #101010;
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 18px;
-      padding: 14px;
-    }
-
-    .item-label {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 4px;
-    }
-
-    .item-value {
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .success { color: var(--green); }
-    .danger { color: var(--red); }
-
-    .top-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .top-meta h4 {
-      margin: 0 0 4px;
-      font-size: 16px;
-    }
-
-    .top-meta p {
-      margin: 0;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .note {
-      margin-top: auto;
-      text-align: center;
-      color: #7c766f;
-      font-size: 12px;
-      padding-top: 2px;
-    }
-  </style>
-</head>
-<body>
-  <div class="app">
-    <div class="topbar">
-      <div>
-        <div class="brand-title">🎰 Royale Fortune</div>
-        <div class="brand-sub">private luxury casino</div>
-      </div>
-      <div class="vip-chip" id="vipChip">Гость</div>
-    </div>
-
-    <div class="hero">
-      <div class="hero-label">Баланс</div>
-      <div class="hero-balance" id="balanceValue">Загрузка...</div>
-
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-label">Победы</div>
-          document.getElementById("winsValue").textContent = data.wins;
-        </div>
-        <div class="stat">
-          <div class="stat-label">Серия</div>
-          document.getElementById("streakValue").textContent = data.streak;
-        </div>
-        <div class="stat">
-          <div class="stat-label">Статус</div>
-          document.getElementById("statusValue").textContent = data.status;
-        </div>
-      </div>
-    </div>
-
-    <div class="tabs">
-      <button class="tab active" data-screen="slots">🎰 Слоты</button>
-      <button class="tab" data-screen="profile">👑 Профиль</button>
-      <button class="tab" data-screen="bonus">🎁 Бонус</button>
-      <button class="tab" data-screen="top">🏆 Топ</button>
-      <button class="tab" data-screen="info">📜 Правила</button>
-    </div>
-
-    <section class="screen active" id="screen-slots">
-      <h2 class="title">Игровой зал</h2>
-      <p class="subtitle">Каждая прокрутка стоит 50 фишек.</p>
-
-      <div class="slot-wrap">
-        <div class="reels">
-          <div class="reel" id="reel1">🍒</div>
-          <div class="reel" id="reel2">💎</div>
-          <div class="reel" id="reel3">👑</div>
-        </div>
-        <div class="slot-result" id="slotResult">
-          Нажмите «Крутить», чтобы испытать удачу.
-        </div>
-      </div>
-
-      <div class="row">
-        <button class="gold-btn" id="spinBtn">Крутить за 50</button>
-        <button class="dark-btn" id="reloadBtn">Обновить профиль</button>
-      </div>
-    </section>
-
-    <section class="screen" id="screen-profile">
-      <h2 class="title">Профиль игрока</h2>
-      <p class="subtitle">Ваше положение в элитном сообществе Royale Fortune.</p>
-
-      <div class="list">
-        <div class="item">
-          <div class="item-label">Имя</div>
-          <div class="item-value" id="profileName">Загрузка...</div>
-        </div>
-        <div class="item">
-          <div class="item-label">Статус</div>
-          <div class="item-value" id="profileStatus">Гость</div>
-        </div>
-        <div class="item">
-          <div class="item-label">Баланс</div>
-          <div class="item-value" id="profileBalance">0 фишек</div>
-        </div>
-        <div class="item">
-          <div class="item-label">Победы</div>
-          <div class="item-value" id="profileWins">0</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="screen" id="screen-bonus">
-      <h2 class="title">Ежедневный бонус</h2>
-      <p class="subtitle">Заведение дарит своим гостям небольшой знак расположения.</p>
-
-      <div class="list">
-        <div class="item" style="text-align:center;">
-          <div class="item-label">Сегодня доступно</div>
-          <div class="item-value" style="font-size: 38px; color: var(--gold2);">+250</div>
-          <div class="row" style="justify-content:center; margin-top: 14px;">
-            <button class="gold-btn" id="bonusBtn">Получить бонус</button>
-          </div>
-          <p class="subtitle" id="bonusText" style="margin: 14px 0 0;">
-            Бонус ещё не получен.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="screen" id="screen-top">
-      <h2 class="title">Топ игроков</h2>
-      <p class="subtitle">Пока здесь заглушка. Реальный топ подключим следующим шагом.</p>
-
-      <div class="list" id="topList">
-        <div class="item top-item">
-          <div class="top-meta">
-            <h4>1. Скоро будет</h4>
-            <p>Топ из базы данных</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="screen" id="screen-info">
-      <h2 class="title">Правила</h2>
-      <p class="subtitle">Важная информация для гостей клуба.</p>
-
-      <div class="list">
-        <div class="item">
-          <div class="item-label">Условия</div>
-          <div class="subtitle" style="margin:0;">
-            Все фишки виртуальные. Вывод реальных денег отсутствует.
-            Royale Fortune — это шуточный развлекательный проект.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="note">Royale Fortune · API connected mode</div>
-  </div>
-
-  <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-      tg.setHeaderColor("#0f0f0f");
-      tg.setBackgroundColor("#070707");
-    }
-
+    <script>
     const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";
 
-    const currentUser = {
-      user_id: tg?.initDataUnsafe?.user?.id || 1,
-      username: tg?.initDataUnsafe?.user?.username || tg?.initDataUnsafe?.user?.first_name || "Гость"
-    };
-
-    function setTabs() {
-      document.querySelectorAll(".tab").forEach(tab => {
-        tab.addEventListener("click", () => {
-          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-          tab.classList.add("active");
-
-          const screen = tab.dataset.screen;
-          document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-          document.getElementById(`screen-${screen}`).classList.add("active");
-        });
-      });
-    }
-
-    function updateProfileUI(data) {
-      document.getElementById("balanceValue").textContent = `${data.balance} фишек`;
-      document.getElementById("winsValue").textContent = data.wins;
-      document.getElementById("streakValue").textContent = data.streak;
-      document.getElementById("statusValue").textContent = data.status;
-      document.getElementById("vipChip").textContent = data.status;
-
-      document.getElementById("profileName").textContent = data.username;
-      document.getElementById("profileStatus").textContent = data.status;
-      document.getElementById("profileBalance").textContent = `${data.balance} фишек`;
-      document.getElementById("profileWins").textContent = data.wins;
-    }
-
     async function loadProfile() {
-      try {
-        const response = await fetch(`${API_BASE}/profile`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(currentUser)
-        });
+        console.log("LOAD PROFILE START");
 
-        const data = await response.json();
-        updateProfileUI(data);
-      } catch (error) {
-        console.error(error);
-        document.getElementById("slotResult").innerHTML =
-          `<span class="danger">Не удалось подключиться к API.</span>`;
-      }
-    }
-
-    async function spin() {
-      try {
-        const response = await fetch(`${API_BASE}/spin`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(currentUser)
-        });
-
-        const data = await response.json();
-
-        if (!data.ok) {
-          document.getElementById("slotResult").innerHTML =
-            `<span class="danger">${data.message}</span>`;
-          if (typeof data.balance !== "undefined") {
-            updateProfileUI({
-              username: currentUser.username,
-              balance: data.balance,
-              wins: 0,
-              streak: 0,
-              status: "Гость"
+        try {
+            const response = await fetch(`${API_BASE}/profile`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: 1,
+                    username: "test"
+                })
             });
-          }
-          return;
+
+            const data = await response.json();
+            console.log("PROFILE DATA:", data);
+
+            document.getElementById("balanceValue").textContent = data.balance;
+            document.getElementById("winsValue").textContent = data.wins;
+            document.getElementById("streakValue").textContent = data.streak;
+            document.getElementById("statusValue").textContent = data.status;
+            document.getElementById("vipChip").textContent = data.status;
+        } catch (e) {
+            console.error("ERROR:", e);
         }
-
-        document.getElementById("reel1").textContent = data.result[0];
-        document.getElementById("reel2").textContent = data.result[1];
-        document.getElementById("reel3").textContent = data.result[2];
-        document.getElementById("slotResult").textContent = data.message;
-
-        updateProfileUI({
-          username: currentUser.username,
-          balance: data.balance,
-          wins: data.wins,
-          streak: data.streak,
-          status: "Гость"
-        });
-      } catch (error) {
-        console.error(error);
-        document.getElementById("slotResult").innerHTML =
-          `<span class="danger">Ошибка соединения с API.</span>`;
-      }
     }
 
-    async function claimBonus() {
-      try {
-        const response = await fetch(`${API_BASE}/bonus`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(currentUser)
-        });
+    window.onload = loadProfile;
+    </script>
 
-        const data = await response.json();
-
-      document.getElementById("balanceValue").textContent = data.balance;
-
-        if (typeof data.balance !== "undefined") {
-          await loadProfile();
+    <style>
+        :root {
+            --bg: #090909;
+            --bg2: #131313;
+            --card: rgba(255,255,255,0.04);
+            --line: rgba(212,175,55,0.18);
+            --gold: #d4af37;
+            --gold2: #f1d47a;
+            --text: #f5f0e6;
+            --muted: #9e988e;
+            --green: #55c271;
+            --red: #dc6666;
+            --shadow: 0 18px 40px rgba(0,0,0,0.45);
+            --radius: 22px;
         }
-      } catch (error) {
-        console.error(error);
-        document.getElementById("bonusText").innerHTML =
-          `<span class="danger">Ошибка соединения с API.</span>`;
-      }
-    }
 
-    document.getElementById("spinBtn").addEventListener("click", spin);
-    document.getElementById("bonusBtn").addEventListener("click", claimBonus);
-    document.getElementById("reloadBtn").addEventListener("click", loadProfile);
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    setTabs();
-    loadProfile();
-  </script>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top, rgba(212,175,55,0.14), transparent 28%),
+                linear-gradient(180deg, #070707 0%, #111 100%);
+            min-height: 100vh;
+        }
+
+        .app {
+            max-width: 460px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding: 16px 14px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .brand-title {
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--gold2);
+            letter-spacing: 0.2px;
+            margin-bottom: 4px;
+        }
+
+        .brand-sub {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .vip-chip {
+            padding: 10px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(212,175,55,0.3);
+            background: rgba(212,175,55,0.08);
+            color: var(--gold2);
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .hero {
+            border-radius: 26px;
+            padding: 18px;
+            background:
+                linear-gradient(145deg, rgba(212,175,55,0.1), rgba(255,255,255,0.02));
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-label {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .hero-balance {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--gold2);
+            margin-bottom: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 18px;
+            padding: 12px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .tab {
+            background: var(--card);
+            border: 1px solid rgba(212,175,55,0.1);
+            color: var(--text);
+            border-radius: 18px;
+            padding: 14px 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+
+        .tab.active {
+            background: linear-gradient(180deg, rgba(212,175,55,0.18), rgba(255,255,255,0.03));
+            border-color: rgba(212,175,55,0.42);
+            color: var(--gold2);
+        }
+
+        .screen {
+            display: none;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--gold2);
+            margin: 0 0 6px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 0 0 16px;
+        }
+
+        .slot-wrap {
+            background: #090909;
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 18px 12px;
+            margin-bottom: 16px;
+        }
+
+        .reels {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .reel {
+            width: 78px;
+            height: 78px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 18px;
+            background: linear-gradient(180deg, #171717, #0c0c0c);
+            border: 1px solid rgba(212,175,55,0.15);
+            font-size: 42px;
+        }
+
+        .slot-result {
+            min-height: 42px;
+            text-align: center;
+            font-size: 15px;
+            line-height: 1.45;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-size: 15px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .gold-btn {
+            background: linear-gradient(180deg, #f2d983, #d0a31e);
+            color: #191308;
+            box-shadow: 0 10px 24px rgba(212,175,55,0.24);
+        }
+
+        .dark-btn {
+            background: #232323;
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .item {
+            background: #101010;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 18px;
+            padding: 14px;
+        }
+
+        .item-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .item-value {
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .top-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .top-meta h4 {
+            margin: 0 0 4px;
+            font-size: 16px;
+        }
+
+        .top-meta p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .note {
+            margin-top: auto;
+            text-align: center;
+            color: #7c766f;
+            font-size: 12px;
+            padding-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="topbar">
+            <div>
+                <div class="brand-title">🎰 Royale Fortune</div>
+                <div class="brand-sub">private luxury casino</div>
+            </div>
+            <div class="vip-chip" id="vipChip">Гость</div>
+        </div>
+
+        <div class="hero">
+            <div class="hero-label">Баланс</div>
+            <div class="hero-balance" id="balanceValue">Загрузка...</div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Победы</div>
+                    <div class="stat-value" id="winsValue">0</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">Серия</div>
+                    <div class="stat-value" id="streakValue">0</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">Статус</div>
+                    <div class="stat-value" id="statusValue">Гость</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active">🎰 Слоты</button>
+            <button class="tab">👑 Профиль</button>
+            <button class="tab">🎁 Бонус</button>
+            <button class="tab">🏆 Топ</button>
+            <button class="tab">📜 Правила</button>
+        </div>
+
+        <section class="screen active">
+            <h2 class="title">Игровой зал</h2>
+            <p class="subtitle">Каждая прокрутка стоит 50 фишек.</p>
+
+            <div class="slot-wrap">
+                <div class="reels">
+                    <div class="reel">🍒</div>
+                    <div class="reel">💎</div>
+                    <div class="reel">👑</div>
+                </div>
+                <div class="slot-result">Нажмите «Крутить», чтобы испытать удачу.</div>
+            </div>
+
+            <div class="row">
+                <button class="gold-btn">Крутить за 50</button>
+                <button class="dark-btn">Обновить профиль</button>
+            </div>
+        </section>
+
+        <div class="note">Royale Fortune · API connected mode</div>
+    </div>
+</body>
+</html>
