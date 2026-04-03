@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -91,17 +90,6 @@
       overflow: hidden;
     }
 
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: auto -40px -60px auto;
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(212,175,55,0.12), transparent 70%);
-      pointer-events: none;
-    }
-
     .hero-label {
       color: var(--muted);
       font-size: 12px;
@@ -178,12 +166,6 @@
 
     .screen.active {
       display: block;
-      animation: fade .22s ease;
-    }
-
-    @keyframes fade {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .title {
@@ -225,7 +207,6 @@
       background: linear-gradient(180deg, #171717, #0c0c0c);
       border: 1px solid rgba(212,175,55,0.15);
       font-size: 42px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
     .slot-result {
@@ -289,28 +270,22 @@
     .success { color: var(--green); }
     .danger { color: var(--red); }
 
-    .shop-item, .top-item {
+    .top-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
     }
 
-    .shop-meta h4, .top-meta h4 {
+    .top-meta h4 {
       margin: 0 0 4px;
       font-size: 16px;
     }
 
-    .shop-meta p, .top-meta p {
+    .top-meta p {
       margin: 0;
       font-size: 13px;
       color: var(--muted);
-    }
-
-    .price {
-      color: var(--gold2);
-      font-weight: 900;
-      white-space: nowrap;
     }
 
     .note {
@@ -334,7 +309,7 @@
 
     <div class="hero">
       <div class="hero-label">Баланс</div>
-      <div class="hero-balance" id="balanceValue">1000 фишек</div>
+      <div class="hero-balance" id="balanceValue">Загрузка...</div>
 
       <div class="stats">
         <div class="stat">
@@ -357,15 +332,12 @@
       <button class="tab" data-screen="profile">👑 Профиль</button>
       <button class="tab" data-screen="bonus">🎁 Бонус</button>
       <button class="tab" data-screen="top">🏆 Топ</button>
-      <button class="tab" data-screen="shop">🛍 Магазин</button>
       <button class="tab" data-screen="info">📜 Правила</button>
     </div>
 
     <section class="screen active" id="screen-slots">
       <h2 class="title">Игровой зал</h2>
-      <p class="subtitle">
-        Элитный слот-автомат Royale Fortune. Каждая прокрутка стоит 50 фишек.
-      </p>
+      <p class="subtitle">Каждая прокрутка стоит 50 фишек.</p>
 
       <div class="slot-wrap">
         <div class="reels">
@@ -380,20 +352,18 @@
 
       <div class="row">
         <button class="gold-btn" id="spinBtn">Крутить за 50</button>
-        <button class="dark-btn" id="helpBtn">Помощь +300</button>
+        <button class="dark-btn" id="reloadBtn">Обновить профиль</button>
       </div>
     </section>
 
     <section class="screen" id="screen-profile">
       <h2 class="title">Профиль игрока</h2>
-      <p class="subtitle">
-        Ваше положение в элитном сообществе Royale Fortune.
-      </p>
+      <p class="subtitle">Ваше положение в элитном сообществе Royale Fortune.</p>
 
       <div class="list">
         <div class="item">
           <div class="item-label">Имя</div>
-          <div class="item-value" id="profileName">Гость Royale Fortune</div>
+          <div class="item-value" id="profileName">Загрузка...</div>
         </div>
         <div class="item">
           <div class="item-label">Статус</div>
@@ -401,7 +371,7 @@
         </div>
         <div class="item">
           <div class="item-label">Баланс</div>
-          <div class="item-value" id="profileBalance">1000 фишек</div>
+          <div class="item-value" id="profileBalance">0 фишек</div>
         </div>
         <div class="item">
           <div class="item-label">Победы</div>
@@ -412,9 +382,7 @@
 
     <section class="screen" id="screen-bonus">
       <h2 class="title">Ежедневный бонус</h2>
-      <p class="subtitle">
-        Заведение дарит своим гостям небольшой знак расположения.
-      </p>
+      <p class="subtitle">Заведение дарит своим гостям небольшой знак расположения.</p>
 
       <div class="list">
         <div class="item" style="text-align:center;">
@@ -432,51 +400,21 @@
 
     <section class="screen" id="screen-top">
       <h2 class="title">Топ игроков</h2>
-      <p class="subtitle">
-        Лидеры Royale Fortune по уровню состояния.
-      </p>
+      <p class="subtitle">Пока здесь заглушка. Реальный топ подключим следующим шагом.</p>
 
-      <div class="list" id="topList"></div>
-    </section>
-
-    <section class="screen" id="screen-shop">
-      <h2 class="title">VIP-магазин</h2>
-      <p class="subtitle">
-        Покупайте статусы и поднимайтесь выше в иерархии клуба.
-      </p>
-
-      <div class="list">
-        <div class="item shop-item">
-          <div class="shop-meta">
-            <h4>🥈 Серебряный гость</h4>
-            <p>Стильный входной статус</p>
+      <div class="list" id="topList">
+        <div class="item top-item">
+          <div class="top-meta">
+            <h4>1. Скоро будет</h4>
+            <p>Топ из базы данных</p>
           </div>
-          <button class="gold-btn" onclick="buyStatus('Серебряный гость', 2000)">2000</button>
-        </div>
-
-        <div class="item shop-item">
-          <div class="shop-meta">
-            <h4>🥇 Золотой резидент</h4>
-            <p>Почётный посетитель заведения</p>
-          </div>
-          <button class="gold-btn" onclick="buyStatus('Золотой резидент', 5000)">5000</button>
-        </div>
-
-        <div class="item shop-item">
-          <div class="shop-meta">
-            <h4>💎 Платиновый игрок</h4>
-            <p>Высшее общество Royale Fortune</p>
-          </div>
-          <button class="gold-btn" onclick="buyStatus('Платиновый игрок', 10000)">10000</button>
         </div>
       </div>
     </section>
 
     <section class="screen" id="screen-info">
       <h2 class="title">Правила</h2>
-      <p class="subtitle">
-        Важная информация для гостей клуба.
-      </p>
+      <p class="subtitle">Важная информация для гостей клуба.</p>
 
       <div class="list">
         <div class="item">
@@ -489,7 +427,7 @@
       </div>
     </section>
 
-    <div class="note">Royale Fortune · Private Gaming Experience</div>
+    <div class="note">Royale Fortune · API connected mode</div>
   </div>
 
   <script>
@@ -501,182 +439,128 @@
       tg.setBackgroundColor("#070707");
     }
 
-    const state = {
-      balance: 1000,
-      wins: 0,
-      streak: 0,
-      status: "Гость",
-      bonusClaimed: false,
-      username: "Гость Royale Fortune"
+    const API_BASE = "http://127.0.0.1:8000";
+
+    const currentUser = {
+      user_id: tg?.initDataUnsafe?.user?.id || 1,
+      username: tg?.initDataUnsafe?.user?.username || tg?.initDataUnsafe?.user?.first_name || "Гость"
     };
 
-    if (tg?.initDataUnsafe?.user) {
-      const user = tg.initDataUnsafe.user;
-      state.username = user.first_name + (user.last_name ? ` ${user.last_name}` : "");
-    }
+    function setTabs() {
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
 
-    const topPlayers = [
-      { name: "Даниил Дмитриевич", balance: 3150 },
-      { name: "wqsiwo", balance: 2500 },
-      { name: "Alya", balance: 1000 }
-    ];
-
-    function updateUI() {
-      document.getElementById("balanceValue").textContent = `${state.balance} фишек`;
-      document.getElementById("winsValue").textContent = state.wins;
-      document.getElementById("streakValue").textContent = state.streak;
-      document.getElementById("statusValue").textContent = state.status;
-      document.getElementById("vipChip").textContent = state.status;
-
-      document.getElementById("profileName").textContent = state.username;
-      document.getElementById("profileStatus").textContent = state.status;
-      document.getElementById("profileBalance").textContent = `${state.balance} фишек`;
-      document.getElementById("profileWins").textContent = state.wins;
-
-      document.getElementById("bonusText").textContent = state.bonusClaimed
-        ? "Бонус уже получен сегодня."
-        : "Бонус ещё не получен.";
-
-      renderTop();
-    }
-
-    function renderTop() {
-      const list = [...topPlayers];
-      const me = list.find(p => p.name === state.username);
-
-      if (me) {
-        me.balance = state.balance;
-      } else {
-        list.push({ name: state.username, balance: state.balance });
-      }
-
-      list.sort((a, b) => b.balance - a.balance);
-
-      document.getElementById("topList").innerHTML = list.slice(0, 5).map((p, i) => `
-        <div class="item top-item">
-          <div class="top-meta">
-            <h4>${i + 1}. ${p.name}</h4>
-            <p>${p.balance} фишек</p>
-          </div>
-        </div>
-      `).join("");
-    }
-
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
-
-        const screen = tab.dataset.screen;
-        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-        document.getElementById(`screen-${screen}`).classList.add("active");
+          const screen = tab.dataset.screen;
+          document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+          document.getElementById(`screen-${screen}`).classList.add("active");
+        });
       });
-    });
-
-    const symbols = ["🍒", "💎", "👑", "7️⃣", "🍋"];
-
-    function randomSymbol() {
-      return symbols[Math.floor(Math.random() * symbols.length)];
     }
 
-    function setReels(a, b, c) {
-      document.getElementById("reel1").textContent = a;
-      document.getElementById("reel2").textContent = b;
-      document.getElementById("reel3").textContent = c;
+    function updateProfileUI(data) {
+      document.getElementById("balanceValue").textContent = `${data.balance} фишек`;
+      document.getElementById("winsValue").textContent = data.wins;
+      document.getElementById("streakValue").textContent = data.streak;
+      document.getElementById("statusValue").textContent = data.status;
+      document.getElementById("vipChip").textContent = data.status;
+
+      document.getElementById("profileName").textContent = data.username;
+      document.getElementById("profileStatus").textContent = data.status;
+      document.getElementById("profileBalance").textContent = `${data.balance} фишек`;
+      document.getElementById("profileWins").textContent = data.wins;
     }
 
-    function spin() {
-      if (state.balance < 50) {
+    async function loadProfile() {
+      try {
+        const response = await fetch(`${API_BASE}/profile`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(currentUser)
+        });
+
+        const data = await response.json();
+        updateProfileUI(data);
+      } catch (error) {
+        console.error(error);
         document.getElementById("slotResult").innerHTML =
-          `<span class="danger">Недостаточно фишек. Используйте помощь от заведения.</span>`;
-        return;
+          `<span class="danger">Не удалось подключиться к API.</span>`;
       }
+    }
 
-      state.balance -= 50;
-      updateUI();
+    async function spin() {
+      try {
+        const response = await fetch(`${API_BASE}/spin`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(currentUser)
+        });
 
-      let ticks = 0;
-      const anim = setInterval(() => {
-        setReels(randomSymbol(), randomSymbol(), randomSymbol());
-        ticks++;
+        const data = await response.json();
 
-        if (ticks > 12) {
-          clearInterval(anim);
-
-          const a = randomSymbol();
-          const b = randomSymbol();
-          const c = randomSymbol();
-          setReels(a, b, c);
-
-          let reward = 0;
-          let text = "";
-
-          if (a === "👑" && b === "👑" && c === "👑") {
-            reward = 1000;
-            text = `👑 Королевский джекпот! +${reward} фишек.`;
-          } else if (a === "7️⃣" && b === "7️⃣" && c === "7️⃣") {
-            reward = 777;
-            text = `💥 Три семёрки! +${reward} фишек.`;
-          } else if (a === b && b === c) {
-            reward = 300;
-            text = `✨ Великолепная комбинация. +${reward} фишек.`;
-          } else if (a === b || b === c || a === c) {
-            reward = 100;
-            text = `🎉 Отличная партия. +${reward} фишек.`;
-          } else {
-            state.streak = 0;
-            text = `🥀 Эта партия осталась за заведением.`;
+        if (!data.ok) {
+          document.getElementById("slotResult").innerHTML =
+            `<span class="danger">${data.message}</span>`;
+          if (typeof data.balance !== "undefined") {
+            updateProfileUI({
+              username: currentUser.username,
+              balance: data.balance,
+              wins: 0,
+              streak: 0,
+              status: "Гость"
+            });
           }
-
-          if (reward > 0) {
-            state.balance += reward;
-            state.wins += 1;
-            state.streak += 1;
-          }
-
-          document.getElementById("slotResult").textContent = text;
-          updateUI();
+          return;
         }
-      }, 100);
-    }
 
-    function claimBonus() {
-      if (state.bonusClaimed) {
-        document.getElementById("bonusText").textContent = "Бонус уже получен сегодня.";
-        return;
+        document.getElementById("reel1").textContent = data.result[0];
+        document.getElementById("reel2").textContent = data.result[1];
+        document.getElementById("reel3").textContent = data.result[2];
+        document.getElementById("slotResult").textContent = data.message;
+
+        updateProfileUI({
+          username: currentUser.username,
+          balance: data.balance,
+          wins: data.wins,
+          streak: data.streak,
+          status: "Гость"
+        });
+      } catch (error) {
+        console.error(error);
+        document.getElementById("slotResult").innerHTML =
+          `<span class="danger">Ошибка соединения с API.</span>`;
       }
-
-      state.balance += 250;
-      state.bonusClaimed = true;
-      document.getElementById("bonusText").innerHTML =
-        `<span class="success">Бонус получен: +250 фишек.</span>`;
-      updateUI();
     }
 
-    function helpFromCasino() {
-      state.balance += 300;
-      document.getElementById("slotResult").innerHTML =
-        `<span class="success">Заведение выдало вам 300 фишек для возвращения в игру.</span>`;
-      updateUI();
-    }
+    async function claimBonus() {
+      try {
+        const response = await fetch(`${API_BASE}/bonus`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(currentUser)
+        });
 
-    function buyStatus(name, price) {
-      if (state.balance < price) {
-        alert("Недостаточно фишек для покупки этого статуса.");
-        return;
+        const data = await response.json();
+
+        document.getElementById("bonusText").textContent = data.message;
+
+        if (typeof data.balance !== "undefined") {
+          await loadProfile();
+        }
+      } catch (error) {
+        console.error(error);
+        document.getElementById("bonusText").innerHTML =
+          `<span class="danger">Ошибка соединения с API.</span>`;
       }
-
-      state.balance -= price;
-      state.status = name;
-      updateUI();
-      alert(`Поздравляем! Ваш новый статус: ${name}`);
     }
 
     document.getElementById("spinBtn").addEventListener("click", spin);
     document.getElementById("bonusBtn").addEventListener("click", claimBonus);
-    document.getElementById("helpBtn").addEventListener("click", helpFromCasino);
+    document.getElementById("reloadBtn").addEventListener("click", loadProfile);
 
-    updateUI();
+    setTabs();
+    loadProfile();
   </script>
 </body>
 </html>
