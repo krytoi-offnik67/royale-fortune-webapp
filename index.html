@@ -1,4 +1,5 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
@@ -7,16 +8,17 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #070707;
-      --panel: #121212;
-      --panel-2: #181818;
+      --bg: #090909;
+      --bg2: #131313;
+      --card: rgba(255,255,255,0.04);
+      --line: rgba(212,175,55,0.18);
       --gold: #d4af37;
-      --gold-soft: #f3d77a;
-      --text: #f5f1e8;
-      --muted: #a7a19a;
-      --danger: #d75c5c;
-      --success: #56c271;
-      --shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      --gold2: #f1d47a;
+      --text: #f5f0e6;
+      --muted: #9e988e;
+      --green: #55c271;
+      --red: #dc6666;
+      --shadow: 0 18px 40px rgba(0,0,0,0.45);
       --radius: 22px;
     }
 
@@ -28,225 +30,212 @@
     body {
       margin: 0;
       font-family: "Segoe UI", Arial, sans-serif;
-      background:
-        radial-gradient(circle at top, rgba(212, 175, 55, 0.13), transparent 25%),
-        linear-gradient(180deg, #080808 0%, #111 100%);
       color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(212,175,55,0.14), transparent 28%),
+        linear-gradient(180deg, #070707 0%, #111 100%);
       min-height: 100vh;
     }
 
     .app {
-      max-width: 440px;
+      max-width: 460px;
       margin: 0 auto;
       min-height: 100vh;
+      padding: 16px 14px 22px;
       display: flex;
       flex-direction: column;
-      padding: 14px 14px 24px;
+      gap: 14px;
     }
 
     .topbar {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 8px 4px 14px;
-    }
-
-    .brand {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      align-items: flex-start;
+      gap: 12px;
     }
 
     .brand-title {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--gold-soft);
-      letter-spacing: 0.4px;
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--gold2);
+      letter-spacing: 0.2px;
+      margin-bottom: 4px;
     }
 
-    .brand-subtitle {
-      font-size: 12px;
+    .brand-sub {
       color: var(--muted);
+      font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 1.4px;
+      letter-spacing: 1.5px;
     }
 
-    .vip-badge {
-      padding: 8px 12px;
-      border: 1px solid rgba(212, 175, 55, 0.35);
+    .vip-chip {
+      padding: 10px 12px;
       border-radius: 999px;
-      background: rgba(212, 175, 55, 0.08);
-      color: var(--gold-soft);
+      border: 1px solid rgba(212,175,55,0.3);
+      background: rgba(212,175,55,0.08);
+      color: var(--gold2);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
+      white-space: nowrap;
     }
 
     .hero {
-      background: linear-gradient(145deg, rgba(212,175,55,0.12), rgba(255,255,255,0.02));
-      border: 1px solid rgba(212,175,55,0.18);
-      border-radius: var(--radius);
+      border-radius: 26px;
       padding: 18px;
+      background:
+        linear-gradient(145deg, rgba(212,175,55,0.1), rgba(255,255,255,0.02));
+      border: 1px solid var(--line);
       box-shadow: var(--shadow);
-      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .balance-label {
-      font-size: 12px;
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -60px auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,175,55,0.12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-label {
       color: var(--muted);
-      margin-bottom: 6px;
+      font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-    }
-
-    .balance-value {
-      font-size: 34px;
-      font-weight: 900;
-      color: var(--gold-soft);
+      letter-spacing: 1.5px;
       margin-bottom: 8px;
     }
 
-    .hero-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 12px;
+    .hero-balance {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--gold2);
+      margin-bottom: 14px;
     }
 
-    .mini-card {
-      flex: 1;
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .stat {
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 18px;
       padding: 12px;
     }
 
-    .mini-card-title {
+    .stat-label {
       font-size: 11px;
       color: var(--muted);
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: 6px;
     }
 
-    .mini-card-value {
-      font-size: 16px;
-      font-weight: 800;
+    .stat-value {
+      font-size: 17px;
+      font-weight: 900;
     }
 
-    .nav-grid {
+    .tabs {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
     }
 
-    .nav-btn {
-      background: var(--panel);
-      border: 1px solid rgba(212,175,55,0.12);
-      border-radius: 20px;
-      padding: 16px 14px;
+    .tab {
+      background: var(--card);
+      border: 1px solid rgba(212,175,55,0.1);
       color: var(--text);
-      text-align: left;
+      border-radius: 18px;
+      padding: 14px 10px;
+      font-size: 14px;
+      font-weight: 800;
       cursor: pointer;
       box-shadow: var(--shadow);
-      transition: transform .15s ease, border-color .15s ease, background .15s ease;
     }
 
-    .nav-btn:active {
-      transform: scale(0.98);
-    }
-
-    .nav-btn.active {
-      border-color: rgba(212,175,55,0.5);
-      background: linear-gradient(180deg, #1a1710, #121212);
-    }
-
-    .nav-btn-title {
-      font-size: 16px;
-      font-weight: 800;
-      margin-bottom: 4px;
-      color: var(--gold-soft);
-    }
-
-    .nav-btn-subtitle {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.35;
+    .tab.active {
+      background: linear-gradient(180deg, rgba(212,175,55,0.18), rgba(255,255,255,0.03));
+      border-color: rgba(212,175,55,0.42);
+      color: var(--gold2);
     }
 
     .screen {
       display: none;
-      background: var(--panel-2);
-      border-radius: var(--radius);
+      background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.05);
-      box-shadow: var(--shadow);
+      border-radius: 24px;
       padding: 16px;
-      margin-bottom: 16px;
+      box-shadow: var(--shadow);
     }
 
     .screen.active {
       display: block;
-      animation: fadeIn .25s ease;
+      animation: fade .22s ease;
     }
 
-    @keyframes fadeIn {
+    @keyframes fade {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .screen-title {
-      font-size: 22px;
+    .title {
+      font-size: 24px;
       font-weight: 900;
-      margin-bottom: 6px;
-      color: var(--gold-soft);
+      color: var(--gold2);
+      margin: 0 0 6px;
     }
 
-    .screen-subtitle {
-      font-size: 13px;
+    .subtitle {
       color: var(--muted);
-      margin-bottom: 18px;
-      line-height: 1.45;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0 0 16px;
     }
 
-    .slot-box {
+    .slot-wrap {
       background: #090909;
-      border: 1px solid rgba(212,175,55,0.18);
+      border: 1px solid var(--line);
       border-radius: 24px;
-      padding: 20px 12px;
+      padding: 18px 12px;
       margin-bottom: 16px;
     }
 
-    .slot-reel {
+    .reels {
       display: flex;
       justify-content: center;
-      align-items: center;
       gap: 10px;
-      font-size: 46px;
-      margin-bottom: 16px;
-      min-height: 70px;
+      margin-bottom: 14px;
     }
 
-    .slot-symbol {
-      width: 72px;
-      height: 72px;
+    .reel {
+      width: 78px;
+      height: 78px;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(180deg, #171717, #0f0f0f);
-      border: 1px solid rgba(212,175,55,0.18);
       border-radius: 18px;
+      background: linear-gradient(180deg, #171717, #0c0c0c);
+      border: 1px solid rgba(212,175,55,0.15);
+      font-size: 42px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
     .slot-result {
+      min-height: 42px;
       text-align: center;
       font-size: 15px;
-      min-height: 40px;
-      color: var(--text);
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
-    .controls {
+    .row {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
@@ -257,269 +246,215 @@
       border-radius: 16px;
       padding: 14px 16px;
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
     }
 
     .gold-btn {
-      background: linear-gradient(180deg, #f1d47a, #cfa221);
-      color: #18130a;
-      box-shadow: 0 8px 22px rgba(212,175,55,0.22);
+      background: linear-gradient(180deg, #f2d983, #d0a31e);
+      color: #191308;
+      box-shadow: 0 10px 24px rgba(212,175,55,0.24);
     }
 
     .dark-btn {
-      background: #222;
+      background: #232323;
       color: var(--text);
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
-    .info-list,
-    .shop-list,
-    .top-list {
+    .list {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    .info-item,
-    .shop-item,
-    .top-item {
+    .item {
       background: #101010;
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 18px;
       padding: 14px;
     }
 
-    .info-item-label {
+    .item-label {
       color: var(--muted);
       font-size: 12px;
       margin-bottom: 4px;
     }
 
-    .info-item-value {
+    .item-value {
       font-size: 18px;
-      font-weight: 800;
-    }
-
-    .status {
-      color: var(--gold-soft);
-    }
-
-    .bonus-card {
-      text-align: center;
-      padding: 12px 6px 4px;
-    }
-
-    .bonus-amount {
-      font-size: 38px;
       font-weight: 900;
-      color: var(--gold-soft);
-      margin: 10px 0;
     }
 
-    .muted {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
+    .success { color: var(--green); }
+    .danger { color: var(--red); }
 
-    .success {
-      color: var(--success);
-    }
-
-    .danger {
-      color: var(--danger);
-    }
-
-    .shop-item {
+    .shop-item, .top-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
     }
 
-    .shop-meta h4,
-    .top-meta h4 {
+    .shop-meta h4, .top-meta h4 {
       margin: 0 0 4px;
       font-size: 16px;
     }
 
-    .shop-meta p,
-    .top-meta p {
+    .shop-meta p, .top-meta p {
       margin: 0;
-      color: var(--muted);
       font-size: 13px;
+      color: var(--muted);
     }
 
     .price {
-      color: var(--gold-soft);
+      color: var(--gold2);
       font-weight: 900;
       white-space: nowrap;
     }
 
-    .footer-note {
+    .note {
       margin-top: auto;
       text-align: center;
-      color: #7d776f;
+      color: #7c766f;
       font-size: 12px;
-      padding-top: 6px;
+      padding-top: 2px;
     }
   </style>
 </head>
 <body>
   <div class="app">
     <div class="topbar">
-      <div class="brand">
+      <div>
         <div class="brand-title">🎰 Royale Fortune</div>
-        <div class="brand-subtitle">luxury casino club</div>
+        <div class="brand-sub">private luxury casino</div>
       </div>
-      <div class="vip-badge" id="vipBadge">Гость</div>
+      <div class="vip-chip" id="vipChip">Гость</div>
     </div>
 
     <div class="hero">
-      <div class="balance-label">Баланс</div>
-      <div class="balance-value" id="balanceValue">1000 фишек</div>
+      <div class="hero-label">Баланс</div>
+      <div class="hero-balance" id="balanceValue">1000 фишек</div>
 
-      <div class="hero-row">
-        <div class="mini-card">
-          <div class="mini-card-title">Серия</div>
-          <div class="mini-card-value" id="streakValue">0</div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Победы</div>
+          <div class="stat-value" id="winsValue">0</div>
         </div>
-        <div class="mini-card">
-          <div class="mini-card-title">Победы</div>
-          <div class="mini-card-value" id="winsValue">0</div>
+        <div class="stat">
+          <div class="stat-label">Серия</div>
+          <div class="stat-value" id="streakValue">0</div>
         </div>
-        <div class="mini-card">
-          <div class="mini-card-title">Статус</div>
-          <div class="mini-card-value status" id="statusValue">Гость</div>
+        <div class="stat">
+          <div class="stat-label">Статус</div>
+          <div class="stat-value" id="statusValue">Гость</div>
         </div>
       </div>
     </div>
 
-    <div class="nav-grid">
-      <button class="nav-btn active" data-screen="slots">
-        <div class="nav-btn-title">🎰 Слоты</div>
-        <div class="nav-btn-subtitle">Главная игра Royale Fortune</div>
-      </button>
-
-      <button class="nav-btn" data-screen="profile">
-        <div class="nav-btn-title">👑 Профиль</div>
-        <div class="nav-btn-subtitle">Ваши данные и статус</div>
-      </button>
-
-      <button class="nav-btn" data-screen="bonus">
-        <div class="nav-btn-title">🎁 Бонус</div>
-        <div class="nav-btn-subtitle">Ежедневный подарок</div>
-      </button>
-
-      <button class="nav-btn" data-screen="top">
-        <div class="nav-btn-title">🏆 Топ</div>
-        <div class="nav-btn-subtitle">Рейтинг игроков</div>
-      </button>
-
-      <button class="nav-btn" data-screen="shop">
-        <div class="nav-btn-title">🛍 Магазин</div>
-        <div class="nav-btn-subtitle">VIP-статусы и привилегии</div>
-      </button>
-
-      <button class="nav-btn" data-screen="info">
-        <div class="nav-btn-title">📜 Правила</div>
-        <div class="nav-btn-subtitle">Условия игры и информация</div>
-      </button>
+    <div class="tabs">
+      <button class="tab active" data-screen="slots">🎰 Слоты</button>
+      <button class="tab" data-screen="profile">👑 Профиль</button>
+      <button class="tab" data-screen="bonus">🎁 Бонус</button>
+      <button class="tab" data-screen="top">🏆 Топ</button>
+      <button class="tab" data-screen="shop">🛍 Магазин</button>
+      <button class="tab" data-screen="info">📜 Правила</button>
     </div>
 
     <section class="screen active" id="screen-slots">
-      <div class="screen-title">Игровой зал</div>
-      <div class="screen-subtitle">
-        Делайте ставки, крутите барабаны и собирайте выигрышные комбинации.
-      </div>
+      <h2 class="title">Игровой зал</h2>
+      <p class="subtitle">
+        Элитный слот-автомат Royale Fortune. Каждая прокрутка стоит 50 фишек.
+      </p>
 
-      <div class="slot-box">
-        <div class="slot-reel">
-          <div class="slot-symbol" id="reel1">🍒</div>
-          <div class="slot-symbol" id="reel2">💎</div>
-          <div class="slot-symbol" id="reel3">👑</div>
+      <div class="slot-wrap">
+        <div class="reels">
+          <div class="reel" id="reel1">🍒</div>
+          <div class="reel" id="reel2">💎</div>
+          <div class="reel" id="reel3">👑</div>
         </div>
         <div class="slot-result" id="slotResult">
-          Нажмите «Крутить», чтобы испытать благосклонность фортуны.
+          Нажмите «Крутить», чтобы испытать удачу.
         </div>
       </div>
 
-      <div class="controls">
+      <div class="row">
         <button class="gold-btn" id="spinBtn">Крутить за 50</button>
-        <button class="dark-btn" id="helpBtn">Помощь от заведения</button>
+        <button class="dark-btn" id="helpBtn">Помощь +300</button>
       </div>
     </section>
 
     <section class="screen" id="screen-profile">
-      <div class="screen-title">Профиль игрока</div>
-      <div class="screen-subtitle">
-        Ваше положение в высшем обществе Royale Fortune.
-      </div>
+      <h2 class="title">Профиль игрока</h2>
+      <p class="subtitle">
+        Ваше положение в элитном сообществе Royale Fortune.
+      </p>
 
-      <div class="info-list">
-        <div class="info-item">
-          <div class="info-item-label">Имя</div>
-          <div class="info-item-value" id="profileName">Гость Royale Fortune</div>
+      <div class="list">
+        <div class="item">
+          <div class="item-label">Имя</div>
+          <div class="item-value" id="profileName">Гость Royale Fortune</div>
         </div>
-        <div class="info-item">
-          <div class="info-item-label">Статус</div>
-          <div class="info-item-value status" id="profileStatus">Гость</div>
+        <div class="item">
+          <div class="item-label">Статус</div>
+          <div class="item-value" id="profileStatus">Гость</div>
         </div>
-        <div class="info-item">
-          <div class="info-item-label">Баланс</div>
-          <div class="info-item-value" id="profileBalance">1000 фишек</div>
+        <div class="item">
+          <div class="item-label">Баланс</div>
+          <div class="item-value" id="profileBalance">1000 фишек</div>
         </div>
-        <div class="info-item">
-          <div class="info-item-label">Победы</div>
-          <div class="info-item-value" id="profileWins">0</div>
+        <div class="item">
+          <div class="item-label">Победы</div>
+          <div class="item-value" id="profileWins">0</div>
         </div>
       </div>
     </section>
 
     <section class="screen" id="screen-bonus">
-      <div class="screen-title">Ежедневный бонус</div>
-      <div class="screen-subtitle">
-        Royale Fortune щедр к своим гостям.
-      </div>
+      <h2 class="title">Ежедневный бонус</h2>
+      <p class="subtitle">
+        Заведение дарит своим гостям небольшой знак расположения.
+      </p>
 
-      <div class="bonus-card">
-        <div class="muted">Сегодня доступно</div>
-        <div class="bonus-amount">+250</div>
-        <div class="controls" style="justify-content:center; margin-top: 14px;">
-          <button class="gold-btn" id="bonusBtn">Получить бонус</button>
+      <div class="list">
+        <div class="item" style="text-align:center;">
+          <div class="item-label">Сегодня доступно</div>
+          <div class="item-value" style="font-size: 38px; color: var(--gold2);">+250</div>
+          <div class="row" style="justify-content:center; margin-top: 14px;">
+            <button class="gold-btn" id="bonusBtn">Получить бонус</button>
+          </div>
+          <p class="subtitle" id="bonusText" style="margin: 14px 0 0;">
+            Бонус ещё не получен.
+          </p>
         </div>
-        <p class="muted" id="bonusText" style="margin-top: 14px;">
-          Бонус ещё не получен.
-        </p>
       </div>
     </section>
 
     <section class="screen" id="screen-top">
-      <div class="screen-title">Топ игроков</div>
-      <div class="screen-subtitle">
-        Элита Royale Fortune.
-      </div>
+      <h2 class="title">Топ игроков</h2>
+      <p class="subtitle">
+        Лидеры Royale Fortune по уровню состояния.
+      </p>
 
-      <div class="top-list" id="topList"></div>
+      <div class="list" id="topList"></div>
     </section>
 
     <section class="screen" id="screen-shop">
-      <div class="screen-title">VIP-магазин</div>
-      <div class="screen-subtitle">
-        Повышайте свой статус и входите в круг избранных.
-      </div>
+      <h2 class="title">VIP-магазин</h2>
+      <p class="subtitle">
+        Покупайте статусы и поднимайтесь выше в иерархии клуба.
+      </p>
 
-      <div class="shop-list">
-        <div class="shop-item">
+      <div class="list">
+        <div class="item shop-item">
           <div class="shop-meta">
             <h4>🥈 Серебряный гость</h4>
-            <p>Первый шаг в мир роскоши</p>
+            <p>Стильный входной статус</p>
           </div>
           <button class="gold-btn" onclick="buyStatus('Серебряный гость', 2000)">2000</button>
         </div>
 
-        <div class="shop-item">
+        <div class="item shop-item">
           <div class="shop-meta">
             <h4>🥇 Золотой резидент</h4>
             <p>Почётный посетитель заведения</p>
@@ -527,7 +462,7 @@
           <button class="gold-btn" onclick="buyStatus('Золотой резидент', 5000)">5000</button>
         </div>
 
-        <div class="shop-item">
+        <div class="item shop-item">
           <div class="shop-meta">
             <h4>💎 Платиновый игрок</h4>
             <p>Высшее общество Royale Fortune</p>
@@ -538,25 +473,23 @@
     </section>
 
     <section class="screen" id="screen-info">
-      <div class="screen-title">Правила</div>
-      <div class="screen-subtitle">
+      <h2 class="title">Правила</h2>
+      <p class="subtitle">
         Важная информация для гостей клуба.
-      </div>
+      </p>
 
-      <div class="info-list">
-        <div class="info-item">
-          <div class="muted">
-            Все фишки виртуальные.  
-            Вывода реальных денег нет.  
-            Это развлекательное шуточное казино.
+      <div class="list">
+        <div class="item">
+          <div class="item-label">Условия</div>
+          <div class="subtitle" style="margin:0;">
+            Все фишки виртуальные. Вывод реальных денег отсутствует.
+            Royale Fortune — это шуточный развлекательный проект.
           </div>
         </div>
       </div>
     </section>
 
-    <div class="footer-note">
-      Royale Fortune · Private Gaming Experience
-    </div>
+    <div class="note">Royale Fortune · Private Gaming Experience</div>
   </div>
 
   <script>
@@ -593,7 +526,7 @@
       document.getElementById("winsValue").textContent = state.wins;
       document.getElementById("streakValue").textContent = state.streak;
       document.getElementById("statusValue").textContent = state.status;
-      document.getElementById("vipBadge").textContent = state.status;
+      document.getElementById("vipChip").textContent = state.status;
 
       document.getElementById("profileName").textContent = state.username;
       document.getElementById("profileStatus").textContent = state.status;
@@ -608,35 +541,33 @@
     }
 
     function renderTop() {
-      const fullTop = [...topPlayers];
-      const existing = fullTop.find(p => p.name === state.username);
+      const list = [...topPlayers];
+      const me = list.find(p => p.name === state.username);
 
-      if (existing) {
-        existing.balance = state.balance;
+      if (me) {
+        me.balance = state.balance;
       } else {
-        fullTop.push({ name: state.username, balance: state.balance });
+        list.push({ name: state.username, balance: state.balance });
       }
 
-      fullTop.sort((a, b) => b.balance - a.balance);
+      list.sort((a, b) => b.balance - a.balance);
 
-      const topHtml = fullTop.slice(0, 5).map((player, index) => `
-        <div class="top-item">
+      document.getElementById("topList").innerHTML = list.slice(0, 5).map((p, i) => `
+        <div class="item top-item">
           <div class="top-meta">
-            <h4>${index + 1}. ${player.name}</h4>
-            <p>${player.balance} фишек</p>
+            <h4>${i + 1}. ${p.name}</h4>
+            <p>${p.balance} фишек</p>
           </div>
         </div>
       `).join("");
-
-      document.getElementById("topList").innerHTML = topHtml;
     }
 
-    document.querySelectorAll(".nav-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
 
-        const screen = btn.dataset.screen;
+        const screen = tab.dataset.screen;
         document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
         document.getElementById(`screen-${screen}`).classList.add("active");
       });
@@ -657,7 +588,7 @@
     function spin() {
       if (state.balance < 50) {
         document.getElementById("slotResult").innerHTML =
-          `<span class="danger">Недостаточно фишек. Воспользуйтесь помощью от заведения.</span>`;
+          `<span class="danger">Недостаточно фишек. Используйте помощь от заведения.</span>`;
         return;
       }
 
@@ -677,25 +608,24 @@
           const c = randomSymbol();
           setReels(a, b, c);
 
-          let resultText = "";
           let reward = 0;
+          let text = "";
 
           if (a === "👑" && b === "👑" && c === "👑") {
             reward = 1000;
-            resultText = `👑 Королевский джекпот! Вы получили +${reward} фишек.`;
+            text = `👑 Королевский джекпот! +${reward} фишек.`;
           } else if (a === "7️⃣" && b === "7️⃣" && c === "7️⃣") {
             reward = 777;
-            resultText = `💥 Три семёрки! Вы получили +${reward} фишек.`;
+            text = `💥 Три семёрки! +${reward} фишек.`;
           } else if (a === b && b === c) {
             reward = 300;
-            resultText = `✨ Великолепная комбинация. Вы получили +${reward} фишек.`;
+            text = `✨ Великолепная комбинация. +${reward} фишек.`;
           } else if (a === b || b === c || a === c) {
             reward = 100;
-            resultText = `🎉 Хорошая партия. Вы получили +${reward} фишек.`;
+            text = `🎉 Отличная партия. +${reward} фишек.`;
           } else {
-            reward = 0;
             state.streak = 0;
-            resultText = `🥀 Эта партия осталась за заведением.`;
+            text = `🥀 Эта партия осталась за заведением.`;
           }
 
           if (reward > 0) {
@@ -704,7 +634,7 @@
             state.streak += 1;
           }
 
-          document.getElementById("slotResult").textContent = resultText;
+          document.getElementById("slotResult").textContent = text;
           updateUI();
         }
       }, 100);
@@ -726,7 +656,7 @@
     function helpFromCasino() {
       state.balance += 300;
       document.getElementById("slotResult").innerHTML =
-        `<span class="success">Заведение предоставило вам 300 фишек для возвращения в игру.</span>`;
+        `<span class="success">Заведение выдало вам 300 фишек для возвращения в игру.</span>`;
       updateUI();
     }
 
