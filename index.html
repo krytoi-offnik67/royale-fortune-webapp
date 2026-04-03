@@ -577,7 +577,7 @@ const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";
 
         const data = await response.json();
 
-        document.getElementById("bonusText").textContent = data.message;
+      document.getElementById("balanceValue").textContent = data.balance;
 
         if (typeof data.balance !== "undefined") {
           await loadProfile();
