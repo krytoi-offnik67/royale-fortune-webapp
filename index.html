@@ -348,15 +348,15 @@ const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";
       <div class="stats">
         <div class="stat">
           <div class="stat-label">Победы</div>
-          <div class="stat-value" id="winsValue">0</div>
+          document.getElementById("winsValue").textContent = data.wins;
         </div>
         <div class="stat">
           <div class="stat-label">Серия</div>
-          <div class="stat-value" id="streakValue">0</div>
+          document.getElementById("streakValue").textContent = data.streak;
         </div>
         <div class="stat">
           <div class="stat-label">Статус</div>
-          <div class="stat-value" id="statusValue">Гость</div>
+          document.getElementById("statusValue").textContent = data.status;
         </div>
       </div>
     </div>
