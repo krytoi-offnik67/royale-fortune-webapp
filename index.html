@@ -1,7 +1,38 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
+   <meta charset="UTF-8" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<script>
+const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";
+
+async function loadProfile() {
+    console.log("LOAD PROFILE START");
+
+    try {
+        const response = await fetch(`${API_BASE}/profile`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_id: 1,
+                username: "test"
+            })
+        });
+
+        const data = await response.json();
+        console.log("PROFILE DATA:", data);
+
+        document.getElementById("balance").textContent = data.balance;
+    } catch (e) {
+        console.error("ERROR:", e);
+    }
+}
+
+window.onload = loadProfile;
+</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Royale Fortune</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -565,5 +596,3 @@ const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";
     setTabs();
     loadProfile();
   </script>
-</body>
-</html>
