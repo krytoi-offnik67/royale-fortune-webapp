@@ -6,6 +6,87 @@
     <title>Royale Fortune</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+    async function loadTop() {
+    try {
+        const res = await fetch(`${API_BASE}/top`);
+        const data = await res.json();
+
+        let html = "";
+        data.forEach((p, i) => {
+            html += `<div>🏆 ${i+1}. ${p.username} — ${p.balance}</div>`;
+        });
+
+        document.getElementById("topList").innerHTML = html;
+
+    } catch (e) {
+        document.getElementById("topList").innerText = "Ошибка загрузки топа";
+    }
+}
+
+    async function spinSlot() {
+    const bet = parseInt(document.getElementById("betInput").value) || 50;
+
+    const slot = document.getElementById("slotResult");
+    slot.innerText = "🎰 Крутим...";
+
+    let emojis = ["🍒","💎","👑"];
+
+    let i = 0;
+    let interval = setInterval(() => {
+        slot.innerText =
+            emojis[Math.floor(Math.random()*3)] + " " +
+            emojis[Math.floor(Math.random()*3)] + " " +
+            emojis[Math.floor(Math.random()*3)];
+
+        i++;
+        if (i > 10) clearInterval(interval);
+    }, 100);
+
+    setTimeout(async () => {
+        const res = await fetch(`${API_BASE}/spin`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                user_id: 1,
+                bet: bet
+            })
+        });
+
+        const data = await res.json();
+
+        slot.innerText = data.result.join(" ");
+        loadProfile();
+
+    }, 1200);
+}
+
+    function showTop() {
+    loadTop();
+}
+
+function showShop() {
+    loadShop();
+}
+async function loadShop() {
+    try {
+        const res = await fetch(`${API_BASE}/shop`);
+        const data = await res.json();
+
+        let html = "";
+        data.forEach(item => {
+            html += `
+            <div>
+                💎 ${item.name} — ${item.price}
+                <button onclick="buyStatus('${item.name}', ${item.price})">Купить</button>
+            </div>`;
+        });
+
+        document.getElementById("shopList").innerHTML = html;
+
+    } catch (e) {
+        document.getElementById("shopList").innerText = "Ошибка загрузки магазина";
+    }
+}
     <style>
         :root {
             --bg: #090909;
