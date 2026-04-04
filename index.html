@@ -6,87 +6,6 @@
     <title>Royale Fortune</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    async function loadTop() {
-    try {
-        const res = await fetch(`${API_BASE}/top`);
-        const data = await res.json();
-
-        let html = "";
-        data.forEach((p, i) => {
-            html += `<div>🏆 ${i+1}. ${p.username} — ${p.balance}</div>`;
-        });
-
-        document.getElementById("topList").innerHTML = html;
-
-    } catch (e) {
-        document.getElementById("topList").innerText = "Ошибка загрузки топа";
-    }
-}
-
-    async function spinSlot() {
-    const bet = parseInt(document.getElementById("betInput").value) || 50;
-
-    const slot = document.getElementById("slotResult");
-    slot.innerText = "🎰 Крутим...";
-
-    let emojis = ["🍒","💎","👑"];
-
-    let i = 0;
-    let interval = setInterval(() => {
-        slot.innerText =
-            emojis[Math.floor(Math.random()*3)] + " " +
-            emojis[Math.floor(Math.random()*3)] + " " +
-            emojis[Math.floor(Math.random()*3)];
-
-        i++;
-        if (i > 10) clearInterval(interval);
-    }, 100);
-
-    setTimeout(async () => {
-        const res = await fetch(`${API_BASE}/spin`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                user_id: 1,
-                bet: bet
-            })
-        });
-
-        const data = await res.json();
-
-        slot.innerText = data.result.join(" ");
-        loadProfile();
-
-    }, 1200);
-}
-
-    function showTop() {
-    loadTop();
-}
-
-function showShop() {
-    loadShop();
-}
-async function loadShop() {
-    try {
-        const res = await fetch(`${API_BASE}/shop`);
-        const data = await res.json();
-
-        let html = "";
-        data.forEach(item => {
-            html += `
-            <div>
-                💎 ${item.name} — ${item.price}
-                <button onclick="buyStatus('${item.name}', ${item.price})">Купить</button>
-            </div>`;
-        });
-
-        document.getElementById("shopList").innerHTML = html;
-
-    } catch (e) {
-        document.getElementById("shopList").innerText = "Ошибка загрузки магазина";
-    }
-}
     <style>
         :root {
             --bg: #090909;
@@ -97,10 +16,7 @@ async function loadShop() {
             --gold2: #f1d47a;
             --text: #f5f0e6;
             --muted: #9e988e;
-            --green: #55c271;
-            --red: #dc6666;
             --shadow: 0 18px 40px rgba(0,0,0,0.45);
-            --radius: 22px;
         }
 
         * {
@@ -217,7 +133,7 @@ async function loadShop() {
         }
 
         .tab {
-            background: var(--card);
+            background: rgba(255,255,255,0.04);
             border: 1px solid rgba(212,175,55,0.1);
             color: var(--text);
             border-radius: 18px;
@@ -268,7 +184,7 @@ async function loadShop() {
 
         .slot-wrap {
             background: #090909;
-            border: 1px solid var(--line);
+            border: 1px solid rgba(212,175,55,0.18);
             border-radius: 24px;
             padding: 18px 12px;
             margin-bottom: 16px;
@@ -291,7 +207,6 @@ async function loadShop() {
             background: linear-gradient(180deg, #171717, #0c0c0c);
             border: 1px solid rgba(212,175,55,0.15);
             font-size: 42px;
-            transition: transform 0.12s linear;
         }
 
         .slot-result {
@@ -417,7 +332,7 @@ async function loadShop() {
     </style>
 
     <script>
-        const API_BASE = "const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";";
+        const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";
 
         const tg = window.Telegram?.WebApp;
         if (tg) {
@@ -438,11 +353,22 @@ async function loadShop() {
             document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
             document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
 
-            document.getElementById(`tab-${name}`).classList.add("active");
-            document.getElementById(`screen-${name}`).classList.add("active");
+            const tab = document.getElementById(`tab-${name}`);
+            const screen = document.getElementById(`screen-${name}`);
+
+            if (tab) tab.classList.add("active");
+            if (screen) screen.classList.add("active");
 
             if (name === "top") loadTop();
             if (name === "shop") loadShop();
+        }
+
+        function showTop() {
+            setActiveTab("top");
+        }
+
+        function showShop() {
+            setActiveTab("shop");
         }
 
         function setReels(a, b, c) {
@@ -484,9 +410,7 @@ async function loadShop() {
                     body: JSON.stringify(currentUser)
                 });
 
-                if (!response.ok) {
-                    throw new Error("profile request failed");
-                }
+                if (!response.ok) throw new Error("profile request failed");
 
                 const data = await response.json();
 
@@ -530,9 +454,7 @@ async function loadShop() {
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error("spin request failed");
-                }
+                if (!response.ok) throw new Error("spin request failed");
 
                 const data = await response.json();
 
@@ -570,9 +492,7 @@ async function loadShop() {
                     body: JSON.stringify(currentUser)
                 });
 
-                if (!response.ok) {
-                    throw new Error("bonus request failed");
-                }
+                if (!response.ok) throw new Error("bonus request failed");
 
                 const data = await response.json();
                 document.getElementById("bonusText").textContent = data.message;
@@ -591,12 +511,12 @@ async function loadShop() {
         async function loadTop() {
             try {
                 const response = await fetch(`${API_BASE}/top`);
-                if (!response.ok) {
-                    throw new Error("top request failed");
-                }
+                if (!response.ok) throw new Error("top request failed");
 
                 const data = await response.json();
                 const topList = document.getElementById("topList");
+
+                if (!topList) return;
 
                 if (!data.length) {
                     topList.innerHTML = `<div class="top-item">Игроков пока нет.</div>`;
@@ -611,19 +531,20 @@ async function loadShop() {
                 `).join("");
             } catch (e) {
                 console.error(e);
-                document.getElementById("topList").innerHTML = `<div class="top-item">Ошибка загрузки топа.</div>`;
+                const topList = document.getElementById("topList");
+                if (topList) topList.innerHTML = `<div class="top-item">Ошибка загрузки топа.</div>`;
             }
         }
 
         async function loadShop() {
             try {
                 const response = await fetch(`${API_BASE}/shop`);
-                if (!response.ok) {
-                    throw new Error("shop request failed");
-                }
+                if (!response.ok) throw new Error("shop request failed");
 
                 const items = await response.json();
                 const shopList = document.getElementById("shopList");
+
+                if (!shopList) return;
 
                 shopList.innerHTML = items.map(item => `
                     <div class="shop-item">
@@ -636,7 +557,8 @@ async function loadShop() {
                 `).join("");
             } catch (e) {
                 console.error(e);
-                document.getElementById("shopList").innerHTML = `<div class="shop-item">Ошибка загрузки магазина.</div>`;
+                const shopList = document.getElementById("shopList");
+                if (shopList) shopList.innerHTML = `<div class="shop-item">Ошибка загрузки магазина.</div>`;
             }
         }
 
@@ -654,9 +576,7 @@ async function loadShop() {
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error("buy status failed");
-                }
+                if (!response.ok) throw new Error("buy status failed");
 
                 const data = await response.json();
                 document.getElementById("shopText").textContent = data.message;
@@ -788,7 +708,7 @@ async function loadShop() {
 
         <section class="screen" id="screen-top">
             <h2 class="title">Топ игроков</h2>
-            <div class="top-list" id="topList"></div>
+            <div class="top-list" id="topList">Загрузка...</div>
         </section>
 
         <section class="screen" id="screen-rules">
@@ -799,7 +719,7 @@ async function loadShop() {
         <section class="screen" id="screen-shop">
             <h2 class="title">Магазин</h2>
             <p class="subtitle">Покупай статусы за фишки.</p>
-            <div class="shop-list" id="shopList"></div>
+            <div class="shop-list" id="shopList">Загрузка...</div>
             <div class="slot-result" id="shopText">Выберите статус для покупки.</div>
         </section>
 
