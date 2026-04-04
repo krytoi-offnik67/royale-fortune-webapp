@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Royale Fortune</title>
-
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
@@ -16,8 +15,6 @@
             --gold2: #f1d47a;
             --text: #f5f0e6;
             --muted: #9e988e;
-            --green: #55c271;
-            --red: #dc6666;
             --shadow: 0 18px 40px rgba(0,0,0,0.45);
         }
 
@@ -285,6 +282,21 @@
             font-weight: 900;
         }
 
+        .top-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .top-item {
+            background: #101010;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 18px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
         .note {
             margin-top: auto;
             text-align: center;
@@ -328,6 +340,10 @@
                     body: JSON.stringify(currentUser)
                 });
 
+                if (!response.ok) {
+                    throw new Error("profile request failed");
+                }
+
                 const data = await response.json();
 
                 document.getElementById("balanceValue").textContent = data.balance;
@@ -348,8 +364,7 @@
         }
 
         async function spinSlots() {
-            const betInput = document.getElementById("betInput");
-            const bet = parseInt(betInput.value, 10);
+            const bet = parseInt(document.getElementById("betInput").value, 10);
 
             if (!bet || bet < 10) {
                 document.getElementById("slotResult").textContent = "Минимальная ставка 10";
@@ -368,6 +383,10 @@
                         bet: bet
                     })
                 });
+
+                if (!response.ok) {
+                    throw new Error("spin request failed");
+                }
 
                 const data = await response.json();
 
@@ -393,7 +412,7 @@
                 document.getElementById("profileStreak").textContent = data.streak;
             } catch (e) {
                 console.error(e);
-                document.getElementById("slotResult").textContent = "Ошибка прокрутки";
+                document.getElementById("slotResult").textContent = "Ошибка игры";
             }
         }
 
@@ -406,6 +425,10 @@
                     },
                     body: JSON.stringify(currentUser)
                 });
+
+                if (!response.ok) {
+                    throw new Error("bonus request failed");
+                }
 
                 const data = await response.json();
                 document.getElementById("bonusText").textContent = data.message;
@@ -421,8 +444,15 @@
             }
         }
 
+        function loadTop() {
+            document.getElementById("topList").innerHTML = `
+                <div class="top-item">1. Скоро будет подключён реальный топ</div>
+            `;
+        }
+
         window.onload = function () {
             loadProfile();
+            loadTop();
 
             document.getElementById("spinBtn").addEventListener("click", spinSlots);
             document.getElementById("bonusBtn").addEventListener("click", getBonus);
@@ -537,7 +567,7 @@
 
         <section class="screen" id="screen-top">
             <h2 class="title">Топ</h2>
-            <p class="subtitle">Топ пока не подключён.</p>
+            <div class="top-list" id="topList"></div>
         </section>
 
         <section class="screen" id="screen-rules">
