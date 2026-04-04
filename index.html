@@ -7,44 +7,9 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <script>
-    const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";
-
-    async function loadProfile() {
-        console.log("LOAD PROFILE START");
-
-        try {
-            const response = await fetch(`${API_BASE}/profile`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    user_id: 1,
-                    username: "test"
-                })
-            });
-
-            const data = await response.json();
-            console.log("PROFILE DATA:", data);
-
-            document.getElementById("balanceValue").textContent = data.balance;
-            document.getElementById("winsValue").textContent = data.wins;
-            document.getElementById("streakValue").textContent = data.streak;
-            document.getElementById("statusValue").textContent = data.status;
-            document.getElementById("vipChip").textContent = data.status;
-        } catch (e) {
-            console.error("ERROR:", e);
-        }
-    }
-
-    window.onload = loadProfile;
-    </script>
-
     <style>
         :root {
             --bg: #090909;
-            --bg2: #131313;
             --card: rgba(255,255,255,0.04);
             --line: rgba(212,175,55,0.18);
             --gold: #d4af37;
@@ -54,7 +19,6 @@
             --green: #55c271;
             --red: #dc6666;
             --shadow: 0 18px 40px rgba(0,0,0,0.45);
-            --radius: 22px;
         }
 
         * {
@@ -93,7 +57,6 @@
             font-size: 30px;
             font-weight: 900;
             color: var(--gold2);
-            letter-spacing: 0.2px;
             margin-bottom: 4px;
         }
 
@@ -118,12 +81,9 @@
         .hero {
             border-radius: 26px;
             padding: 18px;
-            background:
-                linear-gradient(145deg, rgba(212,175,55,0.1), rgba(255,255,255,0.02));
+            background: linear-gradient(145deg, rgba(212,175,55,0.1), rgba(255,255,255,0.02));
             border: 1px solid var(--line);
             box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
         }
 
         .hero-label {
@@ -250,6 +210,7 @@
             text-align: center;
             font-size: 15px;
             line-height: 1.45;
+            margin-top: 8px;
         }
 
         .row {
@@ -279,6 +240,27 @@
             border: 1px solid rgba(255,255,255,0.06);
         }
 
+        .bet-wrap {
+            margin-bottom: 14px;
+        }
+
+        .bet-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .bet-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: #151515;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+
         .list {
             display: flex;
             flex-direction: column;
@@ -303,24 +285,6 @@
             font-weight: 900;
         }
 
-        .top-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .top-meta h4 {
-            margin: 0 0 4px;
-            font-size: 16px;
-        }
-
-        .top-meta p {
-            margin: 0;
-            font-size: 13px;
-            color: var(--muted);
-        }
-
         .note {
             margin-top: auto;
             text-align: center;
@@ -329,6 +293,148 @@
             padding-top: 2px;
         }
     </style>
+
+    <script>
+        const API_BASE = "https://suzann-nongregarious-irremissibly.ngrok-free.dev";
+
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.setHeaderColor("#0f0f0f");
+            tg.setBackgroundColor("#070707");
+        }
+
+        const currentUser = {
+            user_id: tg?.initDataUnsafe?.user?.id || 1,
+            username: tg?.initDataUnsafe?.user?.username || tg?.initDataUnsafe?.user?.first_name || "test"
+        };
+
+        function setActiveTab(name) {
+            document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+            document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
+
+            document.getElementById(`tab-${name}`).classList.add("active");
+            document.getElementById(`screen-${name}`).classList.add("active");
+        }
+
+        async function loadProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/profile`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(currentUser)
+                });
+
+                const data = await response.json();
+
+                document.getElementById("balanceValue").textContent = data.balance;
+                document.getElementById("winsValue").textContent = data.wins;
+                document.getElementById("streakValue").textContent = data.streak;
+                document.getElementById("statusValue").textContent = data.status;
+                document.getElementById("vipChip").textContent = data.status;
+
+                document.getElementById("profileName").textContent = data.username;
+                document.getElementById("profileBalance").textContent = data.balance;
+                document.getElementById("profileWins").textContent = data.wins;
+                document.getElementById("profileStreak").textContent = data.streak;
+                document.getElementById("profileStatus").textContent = data.status;
+            } catch (e) {
+                console.error(e);
+                document.getElementById("slotResult").textContent = "Ошибка загрузки профиля";
+            }
+        }
+
+        async function spinSlots() {
+            const betInput = document.getElementById("betInput");
+            const bet = parseInt(betInput.value, 10);
+
+            if (!bet || bet < 10) {
+                document.getElementById("slotResult").textContent = "Минимальная ставка 10";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/spin`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        user_id: currentUser.user_id,
+                        username: currentUser.username,
+                        bet: bet
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!data.ok) {
+                    document.getElementById("slotResult").textContent = data.message;
+                    document.getElementById("balanceValue").textContent = data.balance;
+                    document.getElementById("winsValue").textContent = data.wins;
+                    document.getElementById("streakValue").textContent = data.streak;
+                    return;
+                }
+
+                document.getElementById("reel1").textContent = data.result[0];
+                document.getElementById("reel2").textContent = data.result[1];
+                document.getElementById("reel3").textContent = data.result[2];
+                document.getElementById("slotResult").textContent = data.message;
+
+                document.getElementById("balanceValue").textContent = data.balance;
+                document.getElementById("winsValue").textContent = data.wins;
+                document.getElementById("streakValue").textContent = data.streak;
+
+                document.getElementById("profileBalance").textContent = data.balance;
+                document.getElementById("profileWins").textContent = data.wins;
+                document.getElementById("profileStreak").textContent = data.streak;
+            } catch (e) {
+                console.error(e);
+                document.getElementById("slotResult").textContent = "Ошибка прокрутки";
+            }
+        }
+
+        async function getBonus() {
+            try {
+                const response = await fetch(`${API_BASE}/bonus`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(currentUser)
+                });
+
+                const data = await response.json();
+                document.getElementById("bonusText").textContent = data.message;
+
+                if (typeof data.balance !== "undefined") {
+                    document.getElementById("balanceValue").textContent = data.balance;
+                }
+
+                await loadProfile();
+            } catch (e) {
+                console.error(e);
+                document.getElementById("bonusText").textContent = "Ошибка бонуса";
+            }
+        }
+
+        window.onload = function () {
+            loadProfile();
+
+            document.getElementById("spinBtn").addEventListener("click", spinSlots);
+            document.getElementById("bonusBtn").addEventListener("click", getBonus);
+            document.getElementById("reloadBtn").addEventListener("click", loadProfile);
+
+            document.getElementById("tab-slots").addEventListener("click", () => setActiveTab("slots"));
+            document.getElementById("tab-profile").addEventListener("click", () => setActiveTab("profile"));
+            document.getElementById("tab-bonus").addEventListener("click", () => setActiveTab("bonus"));
+            document.getElementById("tab-top").addEventListener("click", () => setActiveTab("top"));
+            document.getElementById("tab-rules").addEventListener("click", () => setActiveTab("rules"));
+        };
+    </script>
 </head>
 <body>
     <div class="app">
@@ -363,33 +469,83 @@
         </div>
 
         <div class="tabs">
-            <button class="tab active">🎰 Слоты</button>
-            <button class="tab">👑 Профиль</button>
-            <button class="tab">🎁 Бонус</button>
-            <button class="tab">🏆 Топ</button>
-            <button class="tab">📜 Правила</button>
+            <button class="tab active" id="tab-slots">🎰 Слоты</button>
+            <button class="tab" id="tab-profile">👑 Профиль</button>
+            <button class="tab" id="tab-bonus">🎁 Бонус</button>
+            <button class="tab" id="tab-top">🏆 Топ</button>
+            <button class="tab" id="tab-rules">📜 Правила</button>
         </div>
 
-        <section class="screen active">
+        <section class="screen active" id="screen-slots">
             <h2 class="title">Игровой зал</h2>
-            <p class="subtitle">Каждая прокрутка стоит 50 фишек.</p>
+            <p class="subtitle">Выбери ставку и крути слот.</p>
+
+            <div class="bet-wrap">
+                <div class="bet-label">Ставка</div>
+                <input class="bet-input" id="betInput" type="number" min="10" value="50" />
+            </div>
 
             <div class="slot-wrap">
                 <div class="reels">
-                    <div class="reel">🍒</div>
-                    <div class="reel">💎</div>
-                    <div class="reel">👑</div>
+                    <div class="reel" id="reel1">🍒</div>
+                    <div class="reel" id="reel2">💎</div>
+                    <div class="reel" id="reel3">👑</div>
                 </div>
-                <div class="slot-result">Нажмите «Крутить», чтобы испытать удачу.</div>
+                <div class="slot-result" id="slotResult">Нажмите «Крутить», чтобы испытать удачу.</div>
             </div>
 
             <div class="row">
-                <button class="gold-btn">Крутить за 50</button>
-                <button class="dark-btn">Обновить профиль</button>
+                <button class="gold-btn" id="spinBtn">Крутить</button>
+                <button class="dark-btn" id="reloadBtn">Обновить профиль</button>
             </div>
         </section>
 
-        <div class="note">Royale Fortune · API connected mode</div>
+        <section class="screen" id="screen-profile">
+            <h2 class="title">Профиль</h2>
+            <div class="list">
+                <div class="item">
+                    <div class="item-label">Имя</div>
+                    <div class="item-value" id="profileName">...</div>
+                </div>
+                <div class="item">
+                    <div class="item-label">Баланс</div>
+                    <div class="item-value" id="profileBalance">0</div>
+                </div>
+                <div class="item">
+                    <div class="item-label">Победы</div>
+                    <div class="item-value" id="profileWins">0</div>
+                </div>
+                <div class="item">
+                    <div class="item-label">Серия</div>
+                    <div class="item-value" id="profileStreak">0</div>
+                </div>
+                <div class="item">
+                    <div class="item-label">Статус</div>
+                    <div class="item-value" id="profileStatus">Гость</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="screen" id="screen-bonus">
+            <h2 class="title">Бонус</h2>
+            <p class="subtitle">Получите ежедневный бонус.</p>
+            <div class="row">
+                <button class="gold-btn" id="bonusBtn">Получить бонус</button>
+            </div>
+            <div class="slot-result" id="bonusText">Нажмите кнопку, чтобы получить бонус.</div>
+        </section>
+
+        <section class="screen" id="screen-top">
+            <h2 class="title">Топ</h2>
+            <p class="subtitle">Топ пока не подключён.</p>
+        </section>
+
+        <section class="screen" id="screen-rules">
+            <h2 class="title">Правила</h2>
+            <p class="subtitle">Фишки виртуальные. Вывод денег отсутствует.</p>
+        </section>
+
+        <div class="note">Royale Fortune · fully working mini app</div>
     </div>
 </body>
 </html>
