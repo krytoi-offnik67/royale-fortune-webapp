@@ -210,6 +210,7 @@
             background: linear-gradient(180deg, #171717, #0c0c0c);
             border: 1px solid rgba(212,175,55,0.15);
             font-size: 42px;
+            transition: transform 0.12s linear;
         }
 
         .slot-result {
@@ -292,19 +293,37 @@
             font-weight: 900;
         }
 
-        .top-list {
+        .top-list,
+        .shop-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
-        .top-item {
+        .top-item,
+        .shop-item {
             background: #101010;
             border: 1px solid rgba(255,255,255,0.05);
             border-radius: 18px;
             padding: 14px;
-            font-size: 16px;
-            font-weight: 700;
+        }
+
+        .shop-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .shop-name {
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .shop-price {
+            color: var(--gold2);
+            font-weight: 900;
         }
 
         .note {
@@ -332,12 +351,46 @@
             username: tg?.initDataUnsafe?.user?.username || tg?.initDataUnsafe?.user?.first_name || "test"
         };
 
+        const spinSymbols = ["🍒", "💎", "👑", "7️⃣", "🍋"];
+
         function setActiveTab(name) {
             document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
             document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
 
             document.getElementById(`tab-${name}`).classList.add("active");
             document.getElementById(`screen-${name}`).classList.add("active");
+
+            if (name === "top") loadTop();
+            if (name === "shop") loadShop();
+        }
+
+        function setReels(a, b, c) {
+            document.getElementById("reel1").textContent = a;
+            document.getElementById("reel2").textContent = b;
+            document.getElementById("reel3").textContent = c;
+        }
+
+        function animateSpin(finalResult) {
+            return new Promise((resolve) => {
+                let ticks = 0;
+                const maxTicks = 16;
+
+                const interval = setInterval(() => {
+                    setReels(
+                        spinSymbols[Math.floor(Math.random() * spinSymbols.length)],
+                        spinSymbols[Math.floor(Math.random() * spinSymbols.length)],
+                        spinSymbols[Math.floor(Math.random() * spinSymbols.length)]
+                    );
+
+                    ticks += 1;
+
+                    if (ticks >= maxTicks) {
+                        clearInterval(interval);
+                        setReels(finalResult[0], finalResult[1], finalResult[2]);
+                        resolve();
+                    }
+                }, 90);
+            });
         }
 
         async function loadProfile() {
@@ -381,6 +434,8 @@
                 return;
             }
 
+            document.getElementById("slotResult").textContent = "Слоты крутятся...";
+
             try {
                 const response = await fetch(`${API_BASE}/spin`, {
                     method: "POST",
@@ -408,11 +463,9 @@
                     return;
                 }
 
-                document.getElementById("reel1").textContent = data.result[0];
-                document.getElementById("reel2").textContent = data.result[1];
-                document.getElementById("reel3").textContent = data.result[2];
-                document.getElementById("slotResult").textContent = data.message;
+                await animateSpin(data.result);
 
+                document.getElementById("slotResult").textContent = data.message;
                 document.getElementById("balanceValue").textContent = data.balance;
                 document.getElementById("winsValue").textContent = data.wins;
                 document.getElementById("streakValue").textContent = data.streak;
@@ -454,15 +507,90 @@
             }
         }
 
-        function loadTop() {
-            document.getElementById("topList").innerHTML = `
-                <div class="top-item">1. Скоро будет подключён реальный топ</div>
-            `;
+        async function loadTop() {
+            try {
+                const response = await fetch(`${API_BASE}/top`);
+                if (!response.ok) {
+                    throw new Error("top request failed");
+                }
+
+                const data = await response.json();
+                const topList = document.getElementById("topList");
+
+                if (!data.length) {
+                    topList.innerHTML = `<div class="top-item">Игроков пока нет.</div>`;
+                    return;
+                }
+
+                topList.innerHTML = data.map((player, index) => `
+                    <div class="top-item">
+                        ${index + 1}. ${player.username} — ${player.balance} фишек<br>
+                        <span style="color:#9e988e;font-size:13px;">Победы: ${player.wins} · Серия: ${player.streak} · Статус: ${player.status}</span>
+                    </div>
+                `).join("");
+            } catch (e) {
+                console.error(e);
+                document.getElementById("topList").innerHTML = `<div class="top-item">Ошибка загрузки топа.</div>`;
+            }
+        }
+
+        async function loadShop() {
+            try {
+                const response = await fetch(`${API_BASE}/shop`);
+                if (!response.ok) {
+                    throw new Error("shop request failed");
+                }
+
+                const items = await response.json();
+                const shopList = document.getElementById("shopList");
+
+                shopList.innerHTML = items.map(item => `
+                    <div class="shop-item">
+                        <div class="shop-head">
+                            <div class="shop-name">${item.name}</div>
+                            <div class="shop-price">${item.price} фишек</div>
+                        </div>
+                        <button class="gold-btn" onclick="buyStatus('${item.name}')">Купить</button>
+                    </div>
+                `).join("");
+            } catch (e) {
+                console.error(e);
+                document.getElementById("shopList").innerHTML = `<div class="shop-item">Ошибка загрузки магазина.</div>`;
+            }
+        }
+
+        async function buyStatus(statusName) {
+            try {
+                const response = await fetch(`${API_BASE}/buy-status`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        user_id: currentUser.user_id,
+                        username: currentUser.username,
+                        status_name: statusName
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("buy status failed");
+                }
+
+                const data = await response.json();
+                document.getElementById("shopText").textContent = data.message;
+                await loadProfile();
+                await loadShop();
+            } catch (e) {
+                console.error(e);
+                document.getElementById("shopText").textContent = "Ошибка покупки статуса.";
+            }
         }
 
         window.onload = function () {
             loadProfile();
             loadTop();
+            loadShop();
 
             document.getElementById("spinBtn").addEventListener("click", spinSlots);
             document.getElementById("bonusBtn").addEventListener("click", getBonus);
@@ -473,6 +601,7 @@
             document.getElementById("tab-bonus").addEventListener("click", () => setActiveTab("bonus"));
             document.getElementById("tab-top").addEventListener("click", () => setActiveTab("top"));
             document.getElementById("tab-rules").addEventListener("click", () => setActiveTab("rules"));
+            document.getElementById("tab-shop").addEventListener("click", () => setActiveTab("shop"));
         };
     </script>
 </head>
@@ -514,6 +643,7 @@
             <button class="tab" id="tab-bonus">🎁 Бонус</button>
             <button class="tab" id="tab-top">🏆 Топ</button>
             <button class="tab" id="tab-rules">📜 Правила</button>
+            <button class="tab" id="tab-shop">🛒 Магазин</button>
         </div>
 
         <section class="screen active" id="screen-slots">
@@ -576,13 +706,20 @@
         </section>
 
         <section class="screen" id="screen-top">
-            <h2 class="title">Топ</h2>
+            <h2 class="title">Топ игроков</h2>
             <div class="top-list" id="topList"></div>
         </section>
 
         <section class="screen" id="screen-rules">
             <h2 class="title">Правила</h2>
             <p class="subtitle">Фишки виртуальные. Вывод денег отсутствует.</p>
+        </section>
+
+        <section class="screen" id="screen-shop">
+            <h2 class="title">Магазин</h2>
+            <p class="subtitle">Покупай статусы за фишки.</p>
+            <div class="shop-list" id="shopList"></div>
+            <div class="slot-result" id="shopText">Выберите статус для покупки.</div>
         </section>
 
         <div class="note">Royale Fortune · fully working mini app</div>
