@@ -5,25 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Royale Fortune</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
     <style>
         :root {
-            --bg: #090909;
-            --bg2: #131313;
-            --card: rgba(255,255,255,0.04);
-            --line: rgba(212,175,55,0.18);
-            --gold: #d4af37;
-            --gold2: #f1d47a;
+            --gold: #f1d47a;
             --text: #f5f0e6;
             --muted: #9e988e;
-            --shadow: 0 18px 40px rgba(0,0,0,0.45);
         }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             margin: 0;
             font-family: "Segoe UI", Arial, sans-serif;
@@ -33,7 +21,6 @@
                 linear-gradient(180deg, #070707 0%, #111 100%);
             min-height: 100vh;
         }
-
         .app {
             max-width: 460px;
             margin: 0 auto;
@@ -43,95 +30,76 @@
             flex-direction: column;
             gap: 14px;
         }
-
         .topbar {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             gap: 12px;
         }
-
         .brand-title {
             font-size: 30px;
             font-weight: 900;
-            color: var(--gold2);
+            color: var(--gold);
             margin-bottom: 4px;
         }
-
         .brand-sub {
             color: var(--muted);
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
-
         .vip-chip {
             padding: 10px 12px;
             border-radius: 999px;
             border: 1px solid rgba(212,175,55,0.3);
             background: rgba(212,175,55,0.08);
-            color: var(--gold2);
+            color: var(--gold);
             font-size: 12px;
             font-weight: 800;
             white-space: nowrap;
         }
-
-        .hero {
-            border-radius: 26px;
-            padding: 18px;
-            background: linear-gradient(145deg, rgba(212,175,55,0.1), rgba(255,255,255,0.02));
-            border: 1px solid var(--line);
-            box-shadow: var(--shadow);
-            overflow: hidden;
+        .hero, .screen {
+            border-radius: 24px;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.45);
         }
-
-        .hero-label {
+        .hero {
+            background: linear-gradient(145deg, rgba(212,175,55,0.1), rgba(255,255,255,0.02));
+            border: 1px solid rgba(212,175,55,0.18);
+        }
+        .hero-label, .bet-label, .item-label {
             color: var(--muted);
             font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
-
         .hero-balance {
             font-size: 36px;
             font-weight: 900;
-            color: var(--gold2);
+            color: var(--gold);
             margin-bottom: 14px;
         }
-
         .stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
         }
-
-        .stat {
-            background: rgba(255,255,255,0.03);
+        .stat, .item, .top-item, .shop-item {
+            background: #101010;
             border: 1px solid rgba(255,255,255,0.05);
             border-radius: 18px;
-            padding: 12px;
+            padding: 14px;
         }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .stat-value {
-            font-size: 17px;
+        .stat-value, .item-value {
+            font-size: 18px;
             font-weight: 900;
         }
-
         .tabs {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
         }
-
         .tab {
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(212,175,55,0.1);
@@ -141,47 +109,26 @@
             font-size: 14px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: var(--shadow);
-            transition: 0.15s ease;
         }
-
-        .tab:active {
-            transform: scale(0.98);
-        }
-
         .tab.active {
             background: linear-gradient(180deg, rgba(212,175,55,0.18), rgba(255,255,255,0.03));
             border-color: rgba(212,175,55,0.42);
-            color: var(--gold2);
+            color: var(--gold);
         }
-
-        .screen {
-            display: none;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 24px;
-            padding: 16px;
-            box-shadow: var(--shadow);
-        }
-
-        .screen.active {
-            display: block;
-        }
-
+        .screen { display: none; }
+        .screen.active { display: block; }
         .title {
             font-size: 24px;
             font-weight: 900;
-            color: var(--gold2);
+            color: var(--gold);
             margin: 0 0 6px;
         }
-
         .subtitle {
             color: var(--muted);
             font-size: 13px;
             line-height: 1.5;
             margin: 0 0 16px;
         }
-
         .slot-wrap {
             background: #090909;
             border: 1px solid rgba(212,175,55,0.18);
@@ -189,14 +136,12 @@
             padding: 18px 12px;
             margin-bottom: 16px;
         }
-
         .reels {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-bottom: 14px;
         }
-
         .reel {
             width: 78px;
             height: 78px;
@@ -208,7 +153,6 @@
             border: 1px solid rgba(212,175,55,0.15);
             font-size: 42px;
         }
-
         .slot-result {
             min-height: 42px;
             text-align: center;
@@ -216,13 +160,7 @@
             line-height: 1.45;
             margin-top: 8px;
         }
-
-        .row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
+        .row { display: flex; gap: 10px; flex-wrap: wrap; }
         button {
             border: none;
             border-radius: 16px;
@@ -231,29 +169,16 @@
             font-weight: 900;
             cursor: pointer;
         }
-
         .gold-btn {
             background: linear-gradient(180deg, #f2d983, #d0a31e);
             color: #191308;
             box-shadow: 0 10px 24px rgba(212,175,55,0.24);
         }
-
         .dark-btn {
             background: #232323;
             color: var(--text);
             border: 1px solid rgba(255,255,255,0.06);
         }
-
-        .bet-wrap {
-            margin-bottom: 14px;
-        }
-
-        .bet-label {
-            color: var(--muted);
-            font-size: 12px;
-            margin-bottom: 6px;
-        }
-
         .bet-input {
             width: 100%;
             padding: 12px 14px;
@@ -264,46 +189,11 @@
             font-size: 16px;
             outline: none;
         }
-
-        .list {
+        .list, .top-list, .shop-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-
-        .item {
-            background: #101010;
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 18px;
-            padding: 14px;
-        }
-
-        .item-label {
-            color: var(--muted);
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-
-        .item-value {
-            font-size: 18px;
-            font-weight: 900;
-        }
-
-        .top-list,
-        .shop-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .top-item,
-        .shop-item {
-            background: #101010;
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 18px;
-            padding: 14px;
-        }
-
         .shop-head {
             display: flex;
             justify-content: space-between;
@@ -311,17 +201,14 @@
             align-items: center;
             margin-bottom: 10px;
         }
-
         .shop-name {
             font-size: 17px;
             font-weight: 900;
         }
-
         .shop-price {
-            color: var(--gold2);
+            color: var(--gold);
             font-weight: 900;
         }
-
         .note {
             margin-top: auto;
             text-align: center;
@@ -363,14 +250,6 @@
             if (name === "shop") loadShop();
         }
 
-        function showTop() {
-            setActiveTab("top");
-        }
-
-        function showShop() {
-            setActiveTab("shop");
-        }
-
         function setReels(a, b, c) {
             document.getElementById("reel1").textContent = a;
             document.getElementById("reel2").textContent = b;
@@ -404,9 +283,7 @@
             try {
                 const response = await fetch(`${API_BASE}/profile`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(currentUser)
                 });
 
@@ -444,9 +321,7 @@
             try {
                 const response = await fetch(`${API_BASE}/spin`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         user_id: currentUser.user_id,
                         username: currentUser.username,
@@ -486,9 +361,7 @@
             try {
                 const response = await fetch(`${API_BASE}/bonus`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(currentUser)
                 });
 
@@ -515,7 +388,6 @@
 
                 const data = await response.json();
                 const topList = document.getElementById("topList");
-
                 if (!topList) return;
 
                 if (!data.length) {
@@ -543,7 +415,6 @@
 
                 const items = await response.json();
                 const shopList = document.getElementById("shopList");
-
                 if (!shopList) return;
 
                 shopList.innerHTML = items.map(item => `
@@ -566,9 +437,7 @@
             try {
                 const response = await fetch(`${API_BASE}/buy-status`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         user_id: currentUser.user_id,
                         username: currentUser.username,
@@ -625,12 +494,10 @@
                     <div class="stat-label">Победы</div>
                     <div class="stat-value" id="winsValue">0</div>
                 </div>
-
                 <div class="stat">
                     <div class="stat-label">Серия</div>
                     <div class="stat-value" id="streakValue">0</div>
                 </div>
-
                 <div class="stat">
                     <div class="stat-label">Статус</div>
                     <div class="stat-value" id="statusValue">Гость</div>
